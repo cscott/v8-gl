@@ -1,0 +1,5 @@
+This GL ES utility code (window setup, etc) comes from the excellent
+book "OpenGL® ES 2.0 Programming Guide" ISBN 0321502795, and on the
+web at http://opengles-book.com/.
+
+The source code from the book is MIT licensed.

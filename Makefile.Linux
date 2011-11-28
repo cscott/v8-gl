@@ -1,1 +1,2 @@
-LIBS =  v8/libv8.a -lpthread -lglut -lGLU -lGL
+LIBS =  v8/libv8.a -lpthread -lglut -lGLU -lGL -lEGL
+GLESUTIL_PLAT = LinuxX11
