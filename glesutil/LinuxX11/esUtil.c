@@ -194,7 +194,8 @@ GLboolean userInterrupt(ESContext *esContext)
             if (XLookupString(&xev.xkey,&text,1,&key,0)==1)
             {
                 if (esContext->keyFunc != NULL)
-                    esContext->keyFunc(esContext, text, 0, 0);
+                    if (!esContext->keyFunc(esContext, text, 0, 0))
+			return GL_TRUE;
             }
         }
         if ( xev.type == DestroyNotify )
@@ -302,9 +303,11 @@ void ESUTIL_API esMainLoop ( ESContext *esContext )
         t1 = t2;
 
         if (esContext->updateFunc != NULL)
-            esContext->updateFunc(esContext, deltatime);
+            if (!esContext->updateFunc(esContext, deltatime))
+		break;
         if (esContext->drawFunc != NULL)
-            esContext->drawFunc(esContext);
+	    if (!esContext->drawFunc(esContext))
+		break;
 
         eglSwapBuffers(esContext->eglDisplay, esContext->eglSurface);
 
@@ -323,7 +326,7 @@ void ESUTIL_API esMainLoop ( ESContext *esContext )
 ///
 //  esRegisterDrawFunc()
 //
-void ESUTIL_API esRegisterDrawFunc ( ESContext *esContext, void (ESCALLBACK *drawFunc) (ESContext* ) )
+void ESUTIL_API esRegisterDrawFunc ( ESContext *esContext, int (ESCALLBACK *drawFunc) (ESContext* ) )
 {
    esContext->drawFunc = drawFunc;
 }
@@ -332,7 +335,7 @@ void ESUTIL_API esRegisterDrawFunc ( ESContext *esContext, void (ESCALLBACK *dra
 ///
 //  esRegisterUpdateFunc()
 //
-void ESUTIL_API esRegisterUpdateFunc ( ESContext *esContext, void (ESCALLBACK *updateFunc) ( ESContext*, float ) )
+void ESUTIL_API esRegisterUpdateFunc ( ESContext *esContext, int (ESCALLBACK *updateFunc) ( ESContext*, float ) )
 {
    esContext->updateFunc = updateFunc;
 }
@@ -342,7 +345,7 @@ void ESUTIL_API esRegisterUpdateFunc ( ESContext *esContext, void (ESCALLBACK *u
 //  esRegisterKeyFunc()
 //
 void ESUTIL_API esRegisterKeyFunc ( ESContext *esContext,
-                                    void (ESCALLBACK *keyFunc) (ESContext*, unsigned char, int, int ) )
+                                    int (ESCALLBACK *keyFunc) (ESContext*, unsigned char, int, int ) )
 {
    esContext->keyFunc = keyFunc;
 }

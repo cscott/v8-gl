@@ -69,14 +69,17 @@ Handle<Value> Glesutil_createWindow(const Arguments& args) {
 				       (GLint) width, (GLint) height,
 				       (GLuint) flags));
 }
-static void Glesutil_drawWrapper(ESContext *esContext) {
+static int Glesutil_drawWrapper(ESContext *esContext) {
     HandleScope handle_scope;
     Persistent<Object> obj = Persistent<Object>(_c2js(esContext));
     Local<Value> drawFunc = obj->Get(String::NewSymbol("drawFunc"));
-    // XXX should check type of drawFunc; ensure it's callable, etc.
+    if (drawFunc.IsEmpty()) return 0; // nothing in 'drawFunc'
+    Local<Object> drawFuncObj = drawFunc->ToObject();
+    if (drawFunc.IsEmpty()) return 0; // not an object
     Handle<Value> args[1] = { obj };
-    drawFunc->ToObject()->CallAsFunction(obj, 1, args);
-    // ignore result.
+    Handle<Value> result = drawFuncObj->CallAsFunction(obj, 1, args);
+    if (result.IsEmpty()) return 0; // some problem with call
+    return 1;
 }
 Handle<Value> Glesutil_registerDrawFunc(const Arguments& args) {
     ESContext *esContext = _js2c(args.Holder());
@@ -91,14 +94,17 @@ Handle<Value> Glesutil_registerDrawFunc(const Arguments& args) {
 
     return v8::Undefined();
 }
-static void Glesutil_updateWrapper(ESContext *esContext, float f) {
+static int Glesutil_updateWrapper(ESContext *esContext, float f) {
     HandleScope handle_scope;
     Persistent<Object> obj = Persistent<Object>(_c2js(esContext));
     Local<Value> updateFunc = obj->Get(String::NewSymbol("updateFunc"));
-    // XXX should check type of updateFunc; ensure it's callable, etc.
+    if (updateFunc.IsEmpty()) return 0; // nothing in 'updateFunc'
+    Local<Object> updateFuncObj = updateFunc->ToObject();
+    if (updateFunc.IsEmpty()) return 0; // not an object
     Handle<Value> args[2] = { obj, Number::New(f) };
-    updateFunc->ToObject()->CallAsFunction(obj, 2, args);
-    // ignore result.
+    Handle<Value> result = updateFuncObj->CallAsFunction(obj, 2, args);
+    if (result.IsEmpty()) return 0; // some problem with call
+    return 1;
 }
 Handle<Value> Glesutil_registerUpdateFunc(const Arguments& args) {
     ESContext *esContext = _js2c(args.Holder());
@@ -113,16 +119,20 @@ Handle<Value> Glesutil_registerUpdateFunc(const Arguments& args) {
 
     return v8::Undefined();
 }
-static void Glesutil_keyWrapper(ESContext *esContext, unsigned char c, int i, int j) {
+static int Glesutil_keyWrapper(ESContext *esContext, unsigned char c, int i, int j) {
     HandleScope handle_scope;
     Persistent<Object> obj = Persistent<Object>(_c2js(esContext));
     Local<Value> keyFunc = obj->Get(String::NewSymbol("keyFunc"));
-    // XXX should check type of keyFunc; ensure it's callable, etc.
+    if (keyFunc.IsEmpty()) return 0; // nothing in 'keyFunc'
+    Local<Object> keyFuncObj = keyFunc->ToObject();
+    if (keyFunc.IsEmpty()) return 0; // not an object
+
     char cstr[2] = { c, 0 };
     Handle<Value> args[4] = { obj, String::New(cstr),
 			      Uint32::New(i), Uint32::New(j) };
-    keyFunc->ToObject()->CallAsFunction(obj, 4, args);
-    // ignore result.
+    Handle<Value> result = keyFuncObj->CallAsFunction(obj, 4, args);
+    if (result.IsEmpty()) return 0; // some problem with call
+    return 1;
 }
 Handle<Value> Glesutil_registerKeyFunc(const Arguments& args) {
     ESContext *esContext = _js2c(args.Holder());
