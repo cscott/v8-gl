@@ -15,6 +15,9 @@
 #ifdef BUILD_GLES_BINDINGS
 #include "glesbindings/glesbind.h"
 #endif
+#ifdef BUILD_GLESUTIL_BINDINGS
+#include "glesutilbindings/glesutilbind.h"
+#endif
 #ifdef BUILD_GLU_BINDINGS
 #include "glubindings/glubind.h"
 #endif

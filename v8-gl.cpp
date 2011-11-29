@@ -198,6 +198,9 @@ bool V8GL::initialize(int* pargc, char** argv, string scriptname) {
 #ifdef BUILD_GLES_BINDINGS
 	  Handle<ObjectTemplate> Gles = GlesFactory::createGles();
 #endif
+#ifdef BUILD_GLESUTIL_BINDINGS
+	  Handle<ObjectTemplate> Glesutil = GlesutilFactory::createGlesutil();
+#endif
 
 	  //Set global objects and functions.
 #ifdef BUILD_GL_BINDINGS
@@ -205,6 +208,9 @@ bool V8GL::initialize(int* pargc, char** argv, string scriptname) {
 #endif
 #ifdef BUILD_GLES_BINDINGS
 	  global->Set(String::New("Gles"), Gles);
+#endif
+#ifdef BUILD_GLESUTIL_BINDINGS
+	  global->Set(String::New("Glesutil"), Glesutil);
 #endif
 #ifdef BUILD_GLU_BINDINGS
 	  global->Set(String::New("Glu"), createGlu());
@@ -239,6 +245,9 @@ bool V8GL::initialize(int* pargc, char** argv, string scriptname) {
 #endif
 #ifdef BUILD_GLES_BINDINGS
 	  GlesFactory::self_ = Persistent<Object>::New(Gles->NewInstance());
+#endif
+#ifdef BUILD_GLESUTIL_BINDINGS
+	  GlesFactory::self_ = Persistent<Object>::New(Glesutil->NewInstance());
 #endif
 
 	  //Set (only once) the absolute path for the .js file being executed.

@@ -10,7 +10,7 @@ BUILD_GLES_BINDINGS=1
 BUILD_GLU_BINDINGS=1
 BUILD_GLUT_BINDINGS=1
 BUILD_GLESUTIL=1
-BUILD_GLESUTIL_BINDINGS=
+BUILD_GLESUTIL_BINDINGS=1
 
 SRCS = main.cpp imageloader.cpp utils.cpp v8-gl.cpp \
 	v8-typed-array/typed-array.cc
@@ -37,6 +37,7 @@ endif
 
 ifdef BUILD_GLESUTIL
 SRCS += glesutil/$(GLESUTIL_PLAT)/esUtil.c
+CFLAGS += -Iglesutil/$(GLESUTIL_PLAT)
 endif
 
 ifdef BUILD_GLESUTIL_BINDINGS
