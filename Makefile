@@ -2,7 +2,7 @@
 include Makefile.$(firstword $(subst _, ,$(shell uname -s)))
 
 CC = g++
-CFLAGS := $(CFLAGS) -m32 -Wall -Iv8/include 
+CFLAGS := $(CFLAGS) -Wall -Iv8/include -I/home/olpc/libgfx-include -DOLPC
 CFLAGS += -g
 PROG = v8-gl 
 
