@@ -186,7 +186,7 @@ GLboolean userInterrupt(ESContext *esContext)
     char text;
 
     // Pump all messages from X server. Keypresses are directed to keyfunc (if defined)
-    while ( XPending ( x_display ) )
+    while ( XEventsQueued ( x_display, QueuedAlready ) )
     {
         XNextEvent( x_display, &xev );
         if ( xev.type == KeyPress )
