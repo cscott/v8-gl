@@ -255,6 +255,11 @@ function Draw ( esContext )
       gl.uniform4fv( userData.colorLoc, colors[i] );
       gl.drawElements( gl.TRIANGLES, 6, gl.UNSIGNED_BYTE, 24 );
    }
+
+   // Reset stencil (especially mask)
+   gl.stencilFunc( gl.ALWAYS, 0, ~0 );
+   gl.stencilOp( gl.KEEP, gl.KEEP, gl.KEEP );
+   gl.stencilMask( ~0 );
 }
 
 function main ( )
