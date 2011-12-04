@@ -3,6 +3,7 @@ include Makefile.$(firstword $(subst _, ,$(shell uname -s)))
 
 CC = g++
 CFLAGS := $(CFLAGS) -m32 -Wall -Iv8/include 
+CFLAGS += -g
 PROG = v8-gl 
 
 BUILD_GL_BINDINGS=
