@@ -11,7 +11,13 @@ load(document.baseURI);
 v8gl_canvas.width=window.innerWidth=1024;
 v8gl_canvas.height=window.innerHeight=768;
 init(v8gl_canvas);
-mouseX=500;
-mouseY=100;
 
-renderer.context.mainLoop(animate);
+var startTime = new Date().getTime();
+function myAnimate() {
+    var elapsed = new Date().getTime() - startTime;
+    mouseX = 500*Math.sin(elapsed/1000);
+    mouseY = 500*Math.cos(elapsed/1000);
+    animate();
+}
+
+renderer.context.mainLoop(myAnimate);
