@@ -1,4 +1,4 @@
-LIBS =  v8/libv8.a -lpthread -L/usr/lib/libgfx -lGLESv2 -lEGL -lX11 -lVIVANTE -lGAL
+LIBS =  v8/libv8.a -lpthread -L/usr/lib/libgfx -lGLESv2 -lEGL -lX11
 GLESUTIL_PLAT = LinuxX11
 #LIBS += -lglut -lGLU -lGL
 CFLAGS = -I/home/olpc/libgfx-include
