@@ -36,12 +36,14 @@
 				object.position.z = 200;
 				group.add( object );
 
+/*
 				object = new THREE.Mesh( new THREE.IcosahedronGeometry( 2 ), material );
 				object.position.x = 200;
 				object.position.z = 200;
 				object.scale.x = object.scale.y = object.scale.z = 75;
 				group.add( object );
 
+*/
 				object = new THREE.Mesh( new THREE.PlaneGeometry( 100, 100, 4, 4 ), material );
 				object.position.x = - 200;
 				group.add( object );
@@ -69,13 +71,13 @@
 				object = new THREE.Mesh( new THREE.TorusKnotGeometry( 50, 10, 50, 20 ), material );
 				object.position.z = - 200;
 				group.add( object );
-
+/*
 				object = new THREE.Axes();
 				object.position.x = 200;
 				object.position.z = - 200;
 				object.scale.x = object.scale.y = object.scale.z = 0.5;
 				group.add( object );
-
+*/
 			        renderer = new THREE.WebGLRenderer({canvas:canvas});
 				//renderer.setSize( window.innerWidth, window.innerHeight );
 				renderer.setSize( canvas.width, canvas.height );
