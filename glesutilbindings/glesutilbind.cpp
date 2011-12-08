@@ -1,5 +1,9 @@
-
 #include "glesutilbind.h"
+
+/* stbi image-reading library (header file) */
+#define STBI_HEADER_FILE_ONLY
+#include "stb_image.c"
+#undef  STBI_HEADER_FILE_ONLY
 
 #include <assert.h>
 #include <stdlib.h>
@@ -8,7 +12,7 @@ using namespace v8;
 
 Persistent<Object> GlesutilFactory::self_;
 Persistent<Context> GlesutilFactory::glesutil_persistent_context;
-Persistent<ObjectTemplate> esContextTemplate;
+Persistent<ObjectTemplate> esContextTemplate, esImageTemplate;
 
 /* esContext constructor/wrapper/destructor */
 typedef struct wrappedContext {
@@ -16,7 +20,7 @@ typedef struct wrappedContext {
     Persistent<Object> jsObject;
 } WrappedContext;
 
-void Glesutil_free(Persistent<Value> value, void *data) {
+void Glesutil_freeContext(Persistent<Value> value, void *data) {
     WrappedContext *wrappedContext = (WrappedContext *) data;
     assert(value.IsNearDeath());
     free(wrappedContext);
@@ -36,7 +40,7 @@ Handle<Value> Glesutil_initContext(const Arguments& args) {
     obj->SetInternalField(0, External::New(wrappedContext));
     // register destructor
     wrappedContext->jsObject = Persistent<Object>::New(obj);
-    wrappedContext->jsObject.MakeWeak(wrappedContext, Glesutil_free);
+    wrappedContext->jsObject.MakeWeak(wrappedContext, Glesutil_freeContext);
     wrappedContext->jsObject.MarkIndependent();
     // stash away the javascript object for later C->JS calls
     wrappedContext->esContext.userData = (void *) &(wrappedContext->jsObject);
@@ -167,6 +171,49 @@ Handle<Value> Glesutil_getHeight(Local<String> property,
     return Uint32::New(esContext->height);
 }
 
+/* Very simple image support, based on stb_image.c */
+void Glesutil_freeImage(Persistent<Value> value, void *image) {
+    assert(value.IsNearDeath());
+    stbi_image_free(image);
+    value.Dispose();
+}
+Handle<Value> Glesutil_loadImage(const Arguments& args) {
+    HandleScope handle_scope;
+
+    int width, height, components;
+    if (args.Length() < 1 || !args[0]->IsString())
+	return ThrowException(String::New("Bad arguments"));
+    String::Utf8Value value0(args[0]);
+    char *arg0 = *value0;
+    // get filename argument
+    char *path = V8GLUtils::getRealPath(arg0);
+    // load the image
+    uint8_t *image = stbi_load(path, &width, &height, &components, 4);
+    if (image == NULL) {
+	fprintf(stderr, "Couldn't read %s: %s\n", path,
+		stbi_failure_reason());
+	delete[] path;
+	return ThrowException(String::New("Failed to load file"));
+    }
+    delete[] path;
+
+    // reconstruct size of *image
+    int imagesize = width * height * 4; // always RGBA for now
+    // convert to JavaScript object
+    Local<Object> img = esImageTemplate->NewInstance();
+    img->Set(String::New("width"), Int32::New(width), ReadOnly);
+    img->Set(String::New("height"), Int32::New(height), ReadOnly);
+    img->Set(String::New("bpp"), Int32::New(components * 8), ReadOnly);
+    img->SetIndexedPropertiesToExternalArrayData
+	(image, kExternalUnsignedByteArray, imagesize);
+    // deallocate when gc'ed
+    Persistent<Object> persistentHandle = Persistent<Object>::New(img);
+    persistentHandle.MakeWeak(image, Glesutil_freeImage);
+    persistentHandle.MarkIndependent();
+
+    return handle_scope.Close(img);
+}
+
 /* Top-level context object. */
 Handle<ObjectTemplate> GlesutilFactory::createGlesutil(void) {
     HandleScope handle_scope;
@@ -176,6 +223,7 @@ Handle<ObjectTemplate> GlesutilFactory::createGlesutil(void) {
     Glesutil->SetInternalFieldCount(1);
 
     Glesutil->Set(String::NewSymbol("initContext"), FunctionTemplate::New(Glesutil_initContext));
+    Glesutil->Set(String::NewSymbol("loadImage"), FunctionTemplate::New(Glesutil_loadImage));
 
     // template wrapper for ESContext
     Handle<ObjectTemplate> esContext = ObjectTemplate::New();
@@ -207,8 +255,13 @@ Handle<ObjectTemplate> GlesutilFactory::createGlesutil(void) {
 			   Glesutil_getWidth);
     esContext->SetAccessor(String::NewSymbol("height"),
 			   Glesutil_getHeight);
-
+    // make a persistent handle
     esContextTemplate = Persistent<ObjectTemplate>::New(esContext);
+
+    // template wrapper for images
+    Handle<ObjectTemplate> esImage = ObjectTemplate::New();
+    // make a persistent handle
+    esImageTemplate = Persistent<ObjectTemplate>::New(esImage);
 
     return handle_scope.Close(Glesutil);
 }

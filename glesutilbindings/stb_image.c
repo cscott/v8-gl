@@ -3140,6 +3140,7 @@ static stbi_uc *bmp_load(stbi *s, int *x, int *y, int *comp, int req_comp)
    *x = s->img_x;
    *y = s->img_y;
    if (comp) *comp = s->img_n;
+   if (fake_a) { /* XXX suppress compiler warning (CSA) */ }
    return out;
 }
 
