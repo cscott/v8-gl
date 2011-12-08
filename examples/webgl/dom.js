@@ -23,6 +23,20 @@ function requestAnimationFrame(func) {
     _intervalFunc = func;
 }
 
+function _relativeURI(uri) {
+    // compute relative URL
+    var fullURI = uri;
+    if (fullURI.substring(0,1) != '/') {
+	var baseDir = document.baseURI;
+	var idx = baseDir.lastIndexOf("/");
+	if (idx >= 0) {
+	    baseDir = baseDir.substring(0, idx);
+	}
+	fullURI = baseDir + "/" + fullURI;
+    }
+    return fullURI;
+}
+
 // Create a pseudo-implementation of the <img> tag, to let WebGL stuff load
 // textures they way they expect to.
 function Image() {
@@ -30,16 +44,7 @@ function Image() {
 Image.prototype = {
     // when user sets Image.src, load then invoke image.onload
     _loadImageFromSrc: function() {
-	// compute relative URL
-	var fullSrc = this.src;
-	if (fullSrc.substring(0,1) != '/') {
-	    var baseDir = document.baseURI;
-	    var idx = baseDir.lastIndexOf("/");
-	    if (idx >= 0) {
-		baseDir = baseDir.substring(0, idx);
-	    }
-	    fullSrc = baseDir + "/" + fullSrc;
-	}
+	var fullSrc = _relativeURI(this.src);
 	// load it!
 	//log("Loading from src: "+this.src+" -> "+fullSrc+"\n");
 	this._image = Glesutil.loadImage(fullSrc);
@@ -61,3 +66,20 @@ Object.defineProperty(Image.prototype, "width", {
 Object.defineProperty(Image.prototype, "height", {
     get: function() { return this._image.height; }
 });
+
+// fake implementation of Web Workers (often used for texture loading)
+function Worker(url) {
+    this.url = url;
+    this.contents = read(_relativeURI(url));
+}
+Worker.prototype = {
+    postMessage: function(d) {
+	//this.onmessage({data: d});
+	// XXX ignore the given message, but eval the worker's url
+	var that = this;
+	var postMessage = function(msg) {
+	    that.onmessage({data:msg});
+        };
+	eval(this.contents);
+    }
+};
