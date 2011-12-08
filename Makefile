@@ -41,7 +41,7 @@ CFLAGS += -Iglesutil/$(GLESUTIL_PLAT)
 endif
 
 ifdef BUILD_GLESUTIL_BINDINGS
-SRCS += glesutilbindings/glesutilbind.cpp
+SRCS += glesutilbindings/glesutilbind.cpp glesutilbindings/stb_image.c
 CFLAGS += -DBUILD_GLESUTIL_BINDINGS
 endif
 
