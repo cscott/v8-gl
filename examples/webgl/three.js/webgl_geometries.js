@@ -103,7 +103,7 @@
 
 			function render() {
 
-				var timer = new Date().getTime() * 0.0001;
+				var timer = new Date().getTime() * 0.0001 * 10;
 
 				camera.position.x = Math.cos( timer ) * 800;
 				camera.position.z = Math.sin( timer ) * 800;
