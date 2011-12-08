@@ -4,6 +4,8 @@
 #if defined(V8_GL_USE_GLEW)
 #include "GL/glew.h"
 #include "glew_desktop_shim.h"
+#elif defined(OLPC)
+#include "GLES2/gl2.h"
 #elif defined(__APPLE__)
 #include <OpenGL/OpenGL.h>
 #include "gles_desktop_shim.h"
