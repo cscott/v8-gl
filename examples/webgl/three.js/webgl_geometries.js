@@ -22,7 +22,10 @@
 					new THREE.MeshLambertMaterial( { map: THREE.ImageUtils.loadTexture( 'textures/UV.jpg' ) } ),
 					new THREE.MeshBasicMaterial( { color: 0xffffff, wireframe: true, transparent: true, opacity: 0.1 } )
 				];
-			    material = new THREE.MeshLambertMaterial({color:0xCC0000});
+			    materialx = new THREE.MeshLambertMaterial({
+				//color:0xCC0000,
+				map: THREE.ImageUtils.loadTexture('textures/UV.jpg')
+			    });
 
 				group = new THREE.Object3D();
 				scene.add( group );
@@ -37,12 +40,14 @@
 				object.position.z = 200;
 				group.add( object );
 
+/*
 				object = new THREE.Mesh( new THREE.IcosahedronGeometry( 2 ), material );
 				object.position.x = 200;
 				object.position.z = 200;
 				object.scale.x = object.scale.y = object.scale.z = 75;
 				group.add( object );
 
+*/
 				object = new THREE.Mesh( new THREE.PlaneGeometry( 100, 100, 4, 4 ), material );
 				object.position.x = - 200;
 				group.add( object );
