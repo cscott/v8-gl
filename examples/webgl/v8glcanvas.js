@@ -242,6 +242,15 @@ var v8gl_canvas = (function() {
 	    // long form arguments.
 	    return this._texImage2D.apply(this, arguments);
 	}
+	if (arguments.length == 6 &&
+	    internalformat == Gles.RGBA &&
+	    format == Gles.RGBA &&
+	    type == Gles.UNSIGNED_BYTE &&
+	    source instanceof Image) {
+	    return this._texImage2D(target, level, internalformat,
+				    source.width, source.height, 0,
+				    format, type, source._image);
+	}
 	// XXX convert 'source' to pixel data
 	throw new Error("unsupported");
     };
