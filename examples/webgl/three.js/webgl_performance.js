@@ -44,10 +44,10 @@
 
 				} } );
 
-			        renderer = new THREE.WebGLRenderer( { preserveDrawingBuffer: true, canvas: canvas } );
+			        renderer = new THREE.WebGLRenderer( { preserveDrawingBuffer: false, canvas: canvas } );
 				renderer.setSize( window.innerWidth, window.innerHeight );
 				renderer.sortObjects = false;
-				renderer.autoClearColor = false;
+				//renderer.autoClearColor = false;
 			}
                         function initWithStats(canvas) {
 			        init(canvas);
