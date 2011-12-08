@@ -3,9 +3,6 @@
 
 			var camera, scene, group, renderer;
 
-			init();
-			animate();
-
 			function init(canvas) {
 
 				camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 2000 );
