@@ -18,6 +18,10 @@ function setInterval(func, timeout) {
     // store this away; we'll use this in our 'draw' callback.
     _intervalFunc = func;
 }
+function requestAnimationFrame(func) {
+    // store this away; we'll use this in our 'draw' callback.
+    _intervalFunc = func;
+}
 
 // Create a pseudo-implementation of the <img> tag, to let WebGL stuff load
 // textures they way they expect to.
