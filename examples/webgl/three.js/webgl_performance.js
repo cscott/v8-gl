@@ -23,7 +23,7 @@
 
 					geometry.computeVertexNormals();
 
-					for ( var i = 0; i < 5000; i ++ ) {
+					for ( var i = 0; i < 1000; i ++ ) {
 
 						var mesh = new THREE.Mesh( geometry, material );
 
