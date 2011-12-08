@@ -77,7 +77,8 @@
 				group.add( object );
 
 			        renderer = new THREE.WebGLRenderer({canvas:canvas});
-				renderer.setSize( window.innerWidth, window.innerHeight );
+				//renderer.setSize( window.innerWidth, window.innerHeight );
+				renderer.setSize( canvas.width, canvas.height );
 			}
                         function initWithStats(canvas) {
 			        init(canvas);
